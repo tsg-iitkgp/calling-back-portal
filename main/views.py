@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login as login_fn, logout as logout_fn
 
 import requests
+from decouple import config
 
 # Create your views here.
 def index(request):
@@ -45,6 +46,6 @@ def rs_dashboard(request):
     return render(request, 'main/index.html')
 
 def test_api(request):
-    response = requests.get('https://script.google.com/macros/s/AKfycbxbZj_rtEqCS7ARCwlx3-7Uk8IfQGtw97VWhGjXB1R9QnIJqBaE-uODJ24dIRje9yE/exec?sheetName=Filtered Data')
+    response = requests.get(config('API_ENDPOINT') + '?sheetName=Filtered Data')
     print(response.json())
     return HttpResponse('API Tested')
