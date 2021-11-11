@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from django.contrib.auth import logout as logout_fn
+from django.contrib.auth import authenticate, login as login_fn, logout as logout_fn
 
 import requests
 
@@ -9,14 +9,34 @@ def index(request):
     return redirect('/dashboard')
 
 def login(request):
-    return render(request, 'main/login.html')
+    if request.user.is_authenticated:
+        return redirect('main:dashboard')
+    if(request.method=='POST'):
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(username=username, password=password)
+        print(user)
+        if user is not None:
+            login_fn(request, user)
+            return redirect('main:dashboard')
+        else:
+            return render(request, 'main/login.html')
+    else:
+        return render(request, 'main/login.html')
 
 def logout(request):
     logout_fn(request)
-    return redirect('/auth/login')
+    return redirect('main:login')
 
 def dashboard(request):
-    return render(request, 'main/index.html')
+    user = request.user
+    if not user.is_authenticated:
+        print(user)
+        return redirect('main:login')
+    else:
+        return render(request, 'main/index.html', {
+            user: user,
+        })
 
 def pg_dashboard(request):
     return render(request, 'main/index.html')
