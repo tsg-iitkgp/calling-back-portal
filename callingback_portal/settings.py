@@ -7,7 +7,7 @@ import os
 # Project Imports
 
 # Third Party Imports
-
+from decouple import config
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -18,10 +18,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '&e7-=ccy!++ccikqwju---w*=v4m+lk+ecnwhmpq06i7ae87^2'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG')
 
 ALLOWED_HOSTS = ['*']
 
@@ -131,5 +131,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'tech.tsgiitkgp@gmail.com'
-EMAIL_HOST_PASSWORD = 'apppassword'
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
