@@ -51,10 +51,42 @@ def dashboard(request):
         })
 
 def pg_dashboard(request):
-    return render(request, 'main/index.html')
+    user = request.user
+    if not user.is_authenticated:
+        print(user)
+        return redirect('main:login')
+    else:
+        response = requests.get(config('API_ENDPOINT') + '?sheetName=PG')
+        data = response.json()['data']
+        header = data['header']
+        body = data['data']
+        print()
+        # filter based on hall or dep based on the role
+        return render(request, 'main/index.html', {
+            'user': user,
+            'table_header': header,
+            'table_body': body,
+            'dashboard': 'PG'
+        })
 
 def rs_dashboard(request):
-    return render(request, 'main/index.html')
+    user = request.user
+    if not user.is_authenticated:
+        print(user)
+        return redirect('main:login')
+    else:
+        response = requests.get(config('API_ENDPOINT') + '?sheetName=RS')
+        data = response.json()['data']
+        header = data['header']
+        body = data['data']
+        print()
+        # filter based on hall or dep based on the role
+        return render(request, 'main/index.html', {
+            'user': user,
+            'table_header': header,
+            'table_body': body,
+            'dashboard': 'RS'
+        })
 
 def test_api(request):
     response = requests.get(config('API_ENDPOINT') + '?sheetName=UG')
