@@ -18,7 +18,7 @@ def login(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(username=username, password=password)
-        print(user)
+        print(user, 'Hi')
         if user is not None:
             login_fn(request, user)
             return redirect('main:dashboard')
@@ -41,6 +41,14 @@ def dashboard(request):
         data = response.json()['data']
         header = data['header']
         body = data['data']
+        if user.is_superuser:
+            pass
+        elif user.role == 'warden':
+            index = header.index('hall of residence (as recorded in erp)')
+            body = [item for item in body if item[index]==user.hall]
+        else:
+            index = header.index('department')
+            body = [item for item in body if item[index]==user.department]
         print()
         # filter based on hall or dep based on the role
         return render(request, 'main/index.html', {
@@ -60,6 +68,14 @@ def pg_dashboard(request):
         data = response.json()['data']
         header = data['header']
         body = data['data']
+        if user.is_superuser:
+            pass
+        elif user.role == 'warden':
+            index = header.index('hall of residence (as recorded in erp)')
+            body = [item for item in body if item[index]==user.hall]
+        else:
+            index = header.index('department')
+            body = [item for item in body if item[index]==user.department]
         print()
         # filter based on hall or dep based on the role
         return render(request, 'main/index.html', {
@@ -79,6 +95,14 @@ def rs_dashboard(request):
         data = response.json()['data']
         header = data['header']
         body = data['data']
+        if user.is_superuser:
+            pass
+        elif user.role == 'warden':
+            index = header.index('hall of residence (as recorded in erp)')
+            body = [item for item in body if item[index]==user.hall]
+        else:
+            index = header.index('department')
+            body = [item for item in body if item[index]==user.department]
         print()
         # filter based on hall or dep based on the role
         return render(request, 'main/index.html', {
