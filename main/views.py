@@ -5,6 +5,8 @@ from django.contrib.auth import authenticate, login as login_fn, logout as logou
 import requests
 from decouple import config
 
+import json
+
 # Create your views here.
 def index(request):
     return redirect('/dashboard')
@@ -35,8 +37,17 @@ def dashboard(request):
         print(user)
         return redirect('main:login')
     else:
+        response = requests.get(config('API_ENDPOINT') + '?sheetName=UG')
+        data = response.json()['data']
+        header = data['header']
+        body = data['data']
+        print()
+        # filter based on hall or dep based on the role
         return render(request, 'main/index.html', {
-            user: user,
+            'user': user,
+            'table_header': header,
+            'table_body': body,
+            'dashboard': 'UG'
         })
 
 def pg_dashboard(request):
@@ -46,6 +57,6 @@ def rs_dashboard(request):
     return render(request, 'main/index.html')
 
 def test_api(request):
-    response = requests.get(config('API_ENDPOINT') + '?sheetName=Filtered Data')
-    print(response.json())
+    response = requests.get(config('API_ENDPOINT') + '?sheetName=UG')
+    print(response.json()['data'])
     return HttpResponse('API Tested')
