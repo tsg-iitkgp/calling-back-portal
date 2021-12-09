@@ -5,7 +5,7 @@ from django.contrib.auth.models import AbstractUser
 class User(AbstractUser):
     id = models.AutoField(primary_key=True)
     # [(value, human readable name),....] to create a radio selection field
-    roles = [('hod','Department Head'), ('warden','Hall Warden')]
+    roles = [('hod','Department Head'), ('warden','Hall Warden'), ('hc-member','Hall Council Member')]
     role = models.CharField(max_length=20, default='hod', choices = roles, blank=False, null=False)
     department = models.CharField(max_length=500, blank=True)
     hall = models.CharField(max_length=500, blank=True)

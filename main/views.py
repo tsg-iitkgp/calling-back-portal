@@ -21,6 +21,8 @@ def login(request):
         print(user, 'Hi')
         if user is not None:
             login_fn(request, user)
+            if user.role == 'hc-member':
+                return redirect('main:invitees')
             return redirect('main:dashboard')
         else:
             return render(request, 'main/login.html')
@@ -46,9 +48,11 @@ def dashboard(request):
         elif user.role == 'warden':
             index = header.index('hall of residence (as recorded in erp)')
             body = [item for item in body if item[index]==user.hall]
-        else:
+        elif user.role == 'hod':
             index = header.index('department')
             body = [item for item in body if item[index]==user.department]
+        elif user.role == 'hc-member':
+            return redirect('main:invitees')
         print()
         # filter based on hall or dep based on the role
         return render(request, 'main/index.html', {
@@ -73,9 +77,11 @@ def pg_dashboard(request):
         elif user.role == 'warden':
             index = header.index('hall of residence (as recorded in erp)')
             body = [item for item in body if item[index]==user.hall]
-        else:
+        elif user.role == 'hod':
             index = header.index('department')
             body = [item for item in body if item[index]==user.department]
+        elif user.role == 'hc-member':
+            return redirect('main:invitees')
         print()
         # filter based on hall or dep based on the role
         return render(request, 'main/index.html', {
@@ -100,9 +106,11 @@ def rs_dashboard(request):
         elif user.role == 'warden':
             index = header.index('hall of residence (as recorded in erp)')
             body = [item for item in body if item[index]==user.hall]
-        else:
+        elif user.role == 'hod':
             index = header.index('department')
             body = [item for item in body if item[index]==user.department]
+        elif user.role == 'hc-member':
+            return redirect('main:invitees')
         print()
         # filter based on hall or dep based on the role
         return render(request, 'main/index.html', {
@@ -110,6 +118,32 @@ def rs_dashboard(request):
             'table_header': header,
             'table_body': body,
             'dashboard': 'RS'
+        })
+
+def invitee_dashboard(request):
+    user = request.user
+    if not user.is_authenticated:
+        print(user)
+        return redirect('main:login')
+    else:
+        response = requests.get(config('API_ENDPOINT') + '?sheetName=Invitees')
+        data = response.json()['data']
+        header = data['header']
+        body = data['data']
+        if user.is_superuser:
+            pass
+        elif user.role == 'hc-member':
+            index = header.index('hall of residence (as recorded in erp)')
+            body = [item for item in body if item[index]==user.hall]
+        else:
+            return HttpResponse('Not authorised to view this page')
+        print()
+        # filter based on hall or dep based on the role
+        return render(request, 'main/index.html', {
+            'user': user,
+            'table_header': header,
+            'table_body': body,
+            'dashboard': 'Invitees'
         })
 
 def test_api(request):

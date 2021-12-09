@@ -19,6 +19,7 @@ urlpatterns = [
     path('dashboard', views.dashboard, name='dashboard'),
     path('dashboard/pg', views.pg_dashboard, name='pg_dashboard'),
     path('dashboard/rs', views.rs_dashboard, name='rs_dashboard'),
+    path('dashboard/invitees', views.invitee_dashboard, name='invitees'),
     path('test_api', views.test_api, name='test_api'),
     # path('get_quote/', views.get_quote, name='get_quote'),
     # path('<int:year>/', views.diary),

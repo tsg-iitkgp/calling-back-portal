@@ -19,7 +19,7 @@
         rel="stylesheet">
 
     <!-- Custom styles for this template-->
-    <link href="/static/main/css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="/static/main/css/sb-admin-2.css" rel="stylesheet">
 
     {% comment %}Add your extra head tags in the following block in your extended html file{% endcomment %}
     {% block head %}{% endblock %}
@@ -28,7 +28,6 @@
 <body id="page-top">
     <!--================ Header Menu Area =================-->
 
-    <!--================ Header Menu Area =================-->
     <div id="wrapper">
 
         <!-- Sidebar -->
@@ -54,6 +53,8 @@
                     <i class="fas fa-fw fa-chart-line"></i>
                     <span>Dashboard</span></a>
             </li>
+
+            {% ifnotequal user.role 'hc-member' %}
 
             <!-- Divider -->
             <hr class="sidebar-divider">
@@ -111,6 +112,19 @@
                     <i class="fas fa-fw fa-table"></i>
                     <span>RS</span></a>
             </li>
+            {% endifnotequal %}
+
+            {% if user.is_superuser or user.role == 'hc-member' %}
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Nav Item - Invitees -->
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'main:invitees' %}">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Invitees</span></a>
+            </li>
+            {% endif %}
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
