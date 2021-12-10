@@ -21,8 +21,8 @@ def login(request):
         print(user, 'Hi')
         if user is not None:
             login_fn(request, user)
-            if user.role == 'hc-member':
-                return redirect('main:invitees')
+            # if user.role == 'hc-member':
+            #     return redirect('main:invitees')
             return redirect('main:dashboard')
         else:
             return render(request, 'main/login.html')
@@ -45,21 +45,21 @@ def dashboard(request):
         body = data['data']
         if user.is_superuser:
             pass
-        elif user.role == 'warden':
+        elif (user.role == 'warden') or (user.role == 'hc-member'):
             index = header.index('hall of residence (as recorded in erp)')
             body = [item for item in body if item[index]==user.hall]
         elif user.role == 'hod':
             index = header.index('department')
             body = [item for item in body if item[index]==user.department]
-        elif user.role == 'hc-member':
-            return redirect('main:invitees')
+        else:
+            return HttpResponse('Not authorized to access this route')
         print()
         # filter based on hall or dep based on the role
         return render(request, 'main/index.html', {
             'user': user,
             'table_header': header,
             'table_body': body,
-            'dashboard': 'UG'
+            'dashboard_title': 'UG Campus Residents'
         })
 
 def pg_dashboard(request):
@@ -74,21 +74,21 @@ def pg_dashboard(request):
         body = data['data']
         if user.is_superuser:
             pass
-        elif user.role == 'warden':
+        elif (user.role == 'warden') or (user.role == 'hc-member'):
             index = header.index('hall of residence (as recorded in erp)')
             body = [item for item in body if item[index]==user.hall]
         elif user.role == 'hod':
             index = header.index('department')
             body = [item for item in body if item[index]==user.department]
-        elif user.role == 'hc-member':
-            return redirect('main:invitees')
+        else:
+            return HttpResponse('Not authorized to access this route')
         print()
         # filter based on hall or dep based on the role
         return render(request, 'main/index.html', {
             'user': user,
             'table_header': header,
             'table_body': body,
-            'dashboard': 'PG'
+            'dashboard_title': 'PG Campus Residents'
         })
 
 def rs_dashboard(request):
@@ -103,21 +103,21 @@ def rs_dashboard(request):
         body = data['data']
         if user.is_superuser:
             pass
-        elif user.role == 'warden':
+        elif (user.role == 'warden') or (user.role == 'hc-member'):
             index = header.index('hall of residence (as recorded in erp)')
             body = [item for item in body if item[index]==user.hall]
         elif user.role == 'hod':
             index = header.index('department')
             body = [item for item in body if item[index]==user.department]
-        elif user.role == 'hc-member':
-            return redirect('main:invitees')
+        else:
+            return HttpResponse('Not authorized to access this route')
         print()
         # filter based on hall or dep based on the role
         return render(request, 'main/index.html', {
             'user': user,
             'table_header': header,
             'table_body': body,
-            'dashboard': 'RS'
+            'dashboard_title': 'RS Campus Residents'
         })
 
 def invitee_dashboard(request):
@@ -143,7 +143,7 @@ def invitee_dashboard(request):
             'user': user,
             'table_header': header,
             'table_body': body,
-            'dashboard': 'Invitees'
+            'dashboard_title': 'Campus Invitees Dashboard'
         })
 
 def test_api(request):
